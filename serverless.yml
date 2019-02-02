@@ -1,0 +1,18 @@
+service: dilbert-emailer
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ap-southeast-2
+  profile: dilbert
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        "ses:SendRawEmail"
+      Resource: "*"
+
+functions:
+  get-dilbert:
+    handler: handler.getDilbert
+    events:
+      - schedule: cron(0 21 * * ? *)

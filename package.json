@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.395.0",
+    "axios": "^0.18.0",
+    "fs-promise": "^2.0.3",
+    "image-downloader": "^3.4.2",
+    "moment": "^2.24.0",
+    "node-html-parser": "^1.1.12",
+    "nodemailer": "^5.1.1",
+    "rss-parser": "^3.6.2"
+  }
+}
