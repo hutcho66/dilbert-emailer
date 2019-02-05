@@ -9,8 +9,6 @@ const moment = require('moment');
 const RSSParser = require('rss-parser');
 const htmlParse = require('node-html-parser').parse;
 
-aws.config.update({region: 'us-west-2'});
-
 const feedUrl = 'http://feed.dilbert.com/dilbert/daily_strip';
 const tempPath = '/tmp';
 
@@ -50,7 +48,34 @@ const saveImage = async (imgLink, fname) => {
     }
 }
 
+const getEmailList = async () => {
+    aws.config.update({region: 'ap-southeast-2'});
+
+    const docClient = new aws.DynamoDB.DocumentClient();
+    const params = {
+        TableName: 'dilbert-emails'
+    };
+
+    return new Promise((resolve, reject) => {
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                const { Items } = data;
+                const addresses = Items.map(obj => {
+                    return obj.address;
+                })
+                resolve(addresses);
+            }
+        });
+    });
+}
+
 const sendImageEmail = async (imgFilename, title) => {
+    const emails = await getEmailList();
+
+    aws.config.update({region: 'us-west-2'});
+
     const transporter = nodemailer.createTransport({
         SES: new aws.SES({
             apiVersion: '2010-12-01'
@@ -58,8 +83,9 @@ const sendImageEmail = async (imgFilename, title) => {
     });
 
     const mailOptions = {
-        from: 'dilbert@jbhutcheon.com',
-        to: 'James.Hutcheon@team.telstra.com',
+        from: 'Dilbert Daily <dilbert@jbhutcheon.com>',
+        bcc: emails,
+        reply_to: 'James.Hutcheon@team.telstra.com',
         subject: `Dilbert ${moment(imgFilename, "YYYY-MM-DD").format('DD MMM YYYY')}: ${title}`,
         html: '<img src="cid:imgFilename"/>',
         attachments: [{

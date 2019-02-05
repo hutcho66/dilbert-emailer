@@ -10,6 +10,10 @@ provider:
       Action:
         "ses:SendRawEmail"
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        "dynamodb:Scan"
+      Resource: "*"
 
 functions:
   get-dilbert:
