@@ -5,6 +5,9 @@ provider:
   runtime: nodejs8.10
   region: ap-southeast-2
   profile: dilbert
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -12,11 +15,30 @@ provider:
       Resource: "*"
     - Effect: "Allow"
       Action:
-        "dynamodb:Scan"
-      Resource: "*"
+        - "dynamodb:Scan"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+      Resource: "arn:aws:dynamodb:ap-southeast-2:124400851233:table/dilbert-emails-${self:provider.stage}"
 
 functions:
   get-dilbert:
     handler: handler.getDilbert
     events:
       - schedule: cron(0 21 * * ? *)
+
+  add-email:
+    handler: handler.addEmail
+    events:
+      - http: POST subscribe
+
+  delete-email:
+    handler: handler.removeEmail
+    events:
+      - http: GET delete
+  
+  confirm-email:
+    handler: handler.confirmEmail
+    events:
+      - http: GET confirm
