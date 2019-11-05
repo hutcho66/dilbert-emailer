@@ -31,7 +31,10 @@ functions:
   add-email:
     handler: handler.addEmail
     events:
-      - http: POST subscribe
+      - http: 
+          path: subscribe
+          method: post
+          cors: true
 
   delete-email:
     handler: handler.removeEmail

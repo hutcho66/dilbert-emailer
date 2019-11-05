@@ -301,6 +301,7 @@ module.exports.removeEmail = async (event, context) => {
 }
 
 module.exports.addEmail = async (event, context) => {
+    console.log(event);
     const body = JSON.parse(event.body);
     const emailAddress = body.email;
     const docClient = new aws.DynamoDB.DocumentClient();
@@ -322,7 +323,8 @@ module.exports.addEmail = async (event, context) => {
         return {
             statusCode: 400,
             headers: {
-                'Content-Type': 'application/json'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
             },
             body: JSON.stringify({
                 success: false,
@@ -335,7 +337,8 @@ module.exports.addEmail = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
-                'Content-Type': 'application/json'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
             },
             body: JSON.stringify({
                 success: true,
