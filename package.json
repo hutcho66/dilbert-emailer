@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "aws-sdk": "^2.395.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "csv-parser": "^2.1.0",
     "fs-promise": "^2.0.3",
     "image-downloader": "^3.4.2",
